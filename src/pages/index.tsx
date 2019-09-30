@@ -1,43 +1,34 @@
-import * as React from 'react'
-import Link from 'gatsby-link'
+import * as React from 'react';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import ruLocale from 'date-fns/locale/ru';
+import enLocal from 'date-fns/locale/en-US';
+import { useTranslation } from 'react-i18next';
+import Layout from '../layouts';
+import { Aside, Main, LoanMain, AsideMain } from '../components';
+import LoanContextProvider from '../contexts/loanContextProvider';
 
-// Please note that you can use https://github.com/dotansimha/graphql-code-generator
-// to generate all types from graphQL schema
-interface IndexPageProps {
-  data: {
-    site: {
-      siteMetadata: {
-        title: string
-      }
-    }
-  }
-}
+const IndexPage: React.FC = () => {
+  const [t, i18n] = useTranslation();
 
-export default class extends React.Component<IndexPageProps, {}> {
-  constructor(props: IndexPageProps, context: any) {
-    super(props, context)
-  }
-  public render() {
-    return (
-      <div>
-        <h1>Hi people</h1>
-        <p>
-          Welcome to your new{' '}
-          <strong>{this.props.data.site.siteMetadata.title}</strong> site.
-        </p>
-        <p>Now go build something great.</p>
-        <Link to="/page-2/">Go to page 2</Link>
-      </div>
-    )
-  }
-}
+  return (
+    <Layout>
+      <MuiPickersUtilsProvider
+        utils={DateFnsUtils}
+        locale={i18n.language === 'ru' ? ruLocale : enLocal}>
+        <LoanContextProvider>
+          <>
+            <Main>
+              <LoanMain />
+            </Main>
+            <Aside>
+              <AsideMain />
+            </Aside>
+          </>
+        </LoanContextProvider>
+      </MuiPickersUtilsProvider>
+    </Layout>
+  );
+};
 
-export const pageQuery = graphql`
-  query IndexQuery {
-    site {
-      siteMetadata {
-        title
-      }
-    }
-  }
-`
+export default IndexPage;

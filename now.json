@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build",
+      "config": {
+        "distDir": "public"
+      }
+    },
+    { "src": "src/lambdas/index.go", "use": "@now/go" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/src/lambdas/index.go" },
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "headers": { "cache-control": "public, max-age=0, must-revalidate" }
+    }
+  ],
+  "build": {
+    "env": {
+      "GATSBY_FINANCE_SITE_URL": "@finance_site_url",
+      "FINANCE_YANDEX_METRIKA_ID": "@finance_yandex_metrika_id"
+    }
+  }
+}

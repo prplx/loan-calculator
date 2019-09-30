@@ -1,70 +1,70 @@
-import * as React from 'react'
-import Link from 'gatsby-link'
-import Helmet from 'react-helmet'
+import * as React from 'react';
+import { Global, css } from '@emotion/core';
+import styled from '@emotion/styled';
+import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 
-import './index.css'
+const Layout: React.FC = ({ children }) => {
+  const [t, i18n] = useTranslation();
 
-const Header = () => (
-  <div
-    style={{
-      background: 'rebeccapurple',
-      marginBottom: '1.45rem',
-    }}
-  >
-    <div
-      style={{
-        margin: '0 auto',
-        maxWidth: 960,
-        padding: '1.45rem 1.0875rem',
-      }}
-    >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: 'white',
-            textDecoration: 'none',
-          }}
-        >
-          Gatsby
-        </Link>
-      </h1>
-    </div>
-  </div>
-)
+  const isEn = i18n.language === 'en';
 
-interface DefaultLayoutProps extends React.HTMLProps<HTMLDivElement> {
-  location: {
-    pathname: string
-  }
-  children: any
-}
-
-class DefaultLayout extends React.PureComponent<DefaultLayoutProps, void> {
-  public render() {
-    return (
-      <div>
-        <Helmet
-          title="Gatsby Default Starter"
-          meta={[
-            { name: 'description', content: 'Sample' },
-            { name: 'keywords', content: 'sample, something' },
-          ]}
+  return (
+    <>
+      <Helmet
+        htmlAttributes={{
+          lang: isEn ? 'en' : 'ru',
+        }}>
+        <title>{t('title')}</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta name="description" content={t('description')} />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap"
         />
-        <Header />
-        <div
-          style={{
-            margin: '0 auto',
-            maxWidth: 960,
-            padding: '0px 1.0875rem 1.45rem',
-            paddingTop: 0,
-          }}
-        >
-          {this.props.children()}
-        </div>
-      </div>
-    )
-  }
-}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
+        <link
+          rel="alternate"
+          hrefLang={isEn ? 'ru' : 'en'}
+          href={
+            isEn
+              ? process.env.GATSBY_FINANCE_SITE_URL
+              : `${process.env.GATSBY_FINANCE_SITE_URL}/en`
+          }
+        />
+      </Helmet>
+      <Global
+        styles={css`
+          :root {
+            --dark-blue: #01048a;
+            --text-color: #48536d;
+            --menu-width: 5.54%;
+            --aside-width: 34%;
+          }
+          body {
+            margin: 0;
+            padding: 0;
+            background: white;
+            color: var(--text-color);
+            font-size: calc(1em + 1vw);
+            font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+          }
+        `}
+      />
+      <Grid>{children}</Grid>
+    </>
+  );
+};
 
-export default DefaultLayout
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: auto var(--aside-width);
+  min-height: 100vh;
+`;
+
+export default Layout;

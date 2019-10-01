@@ -21,8 +21,13 @@ const reducer = (state: ILoanState, action: LoanActions): ILoanState => {
       return { ...state, values: action.payload, calculating: true };
     case LoanActionTypes.SET_ROUND:
       return { ...state, round: action.payload };
-    case LoanActionTypes.SET_MODAL_IS_OPEN:
-      return { ...state, modalIsOpen: !state.modalIsOpen };
+    case LoanActionTypes.SET_SCHEDULE_MODAL_IS_OPEN:
+      return { ...state, scheduleModalIsOpen: !state.scheduleModalIsOpen };
+    case LoanActionTypes.SET_CALCULATION_MODAL_IS_OPEN:
+      return {
+        ...state,
+        calculationModalIsOpen: !state.calculationModalIsOpen,
+      };
     default:
       return state;
   }
@@ -32,7 +37,8 @@ const initialState: ILoanState = {
   currencies: [LoanCurrencies.DOLLAR, LoanCurrencies.EURO],
   round: true,
   calculating: false,
-  modalIsOpen: false,
+  scheduleModalIsOpen: false,
+  calculationModalIsOpen: false,
 };
 // @ts-ignore
 [][arrayMethod].call(initialState.currencies, LoanCurrencies.ROUBLE);

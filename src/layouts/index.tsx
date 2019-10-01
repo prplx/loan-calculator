@@ -63,8 +63,12 @@ const Layout: React.FC = ({ children }) => {
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: auto var(--aside-width);
+  grid-template-columns: 100% var(--aside-width);
   min-height: 100vh;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: auto var(--aside-width);
+  }
 `;
 
 export default Layout;

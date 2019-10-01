@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useRef, useEffect, useContext } from 'react';
+import styled from '@emotion/styled';
 import {
   Box,
   MenuItem,
@@ -25,6 +26,7 @@ import { LoanContext } from '../contexts/loanContextProvider';
 import { LoanActionTypes, ICalculation } from '../types';
 import Modal from './Modal';
 import Schedule from './Schedule';
+import LoanCalculation from './LoanCalculation';
 import i18n from './i18n';
 
 const schema = object().shape({
@@ -94,7 +96,7 @@ const LoanMain: React.FC = () => {
   return (
     <Box>
       <MainTitle>{t('title')}</MainTitle>
-      <Box mt="2em">
+      <MainWrapper>
         <Formik
           initialValues={initialValues}
           onSubmit={(values, { setSubmitting }) => {
@@ -103,19 +105,25 @@ const LoanMain: React.FC = () => {
               payload: schema.cast(values),
             });
             calculateLoan(schema.cast(values))
-              .then((data: ICalculation) =>
+              .then((data: ICalculation) => {
                 dispatch({
                   type: LoanActionTypes.SET_CALCULATION,
                   payload: data,
-                }),
-              )
+                });
+
+                if (window && window.innerWidth < 1024) {
+                  dispatch({
+                    type: LoanActionTypes.SET_CALCULATION_MODAL_IS_OPEN,
+                  });
+                }
+              })
               .finally(() => setSubmitting(false));
           }}
           validationSchema={schema}
           render={({ isSubmitting }) => (
             <Form>
-              <Box display="flex">
-                <Box mr={1} width="1">
+              <FormField>
+                <Box>
                   <Field
                     name="amount"
                     component={FormikNumberFormat}
@@ -143,7 +151,7 @@ const LoanMain: React.FC = () => {
                     }}
                   />
                 </Box>
-                <Box ml={1} width="1">
+                <Box>
                   <Field
                     name="term"
                     component={TextField}
@@ -159,9 +167,9 @@ const LoanMain: React.FC = () => {
                     }}
                   />
                 </Box>
-              </Box>
-              <Box display="flex" mt="1em">
-                <Box mr={1} width="1">
+              </FormField>
+              <FormField>
+                <Box>
                   <Field
                     name="start"
                     component={FormikDatePicker}
@@ -174,7 +182,7 @@ const LoanMain: React.FC = () => {
                     }}
                   />
                 </Box>
-                <Box ml={1} width="1">
+                <Box>
                   <Field
                     name="rate"
                     component={TextField}
@@ -188,8 +196,8 @@ const LoanMain: React.FC = () => {
                     }}
                   />
                 </Box>
-              </Box>
-              <Box width="1" mt="1em" display="flex">
+              </FormField>
+              <FormField>
                 <FormControl variant="outlined" className={classes.formControl}>
                   <InputLabel ref={inputLabel} htmlFor="outlined-age-simple">
                     {t('loanType')}
@@ -204,7 +212,7 @@ const LoanMain: React.FC = () => {
                     <MenuItem value="D">{t('evenPrincipalType')}</MenuItem>
                   </Field>
                 </FormControl>
-                <Box mt="4px" ml="32px">
+                <Box>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -223,8 +231,8 @@ const LoanMain: React.FC = () => {
                     label={t('round')}
                   />
                 </Box>
-              </Box>
-              <Box width="1" mt="2em">
+              </FormField>
+              <CalculateButtonWrapper>
                 <Button
                   variant="contained"
                   className={classes.button}
@@ -232,12 +240,16 @@ const LoanMain: React.FC = () => {
                   type="submit">
                   {t('calculate')}
                 </Button>
-              </Box>
+              </CalculateButtonWrapper>
             </Form>
           )}
         />
-      </Box>
+      </MainWrapper>
       <Modal
+        open={state.scheduleModalIsOpen}
+        onClose={() =>
+          dispatch({ type: LoanActionTypes.SET_SCHEDULE_MODAL_IS_OPEN })
+        }
         render={() =>
           state.values &&
           state.calculation && (
@@ -248,9 +260,74 @@ const LoanMain: React.FC = () => {
               currency={state.currencies[0]}
             />
           )
-        }></Modal>
+        }
+      />
+      <Modal
+        open={state.calculationModalIsOpen}
+        onClose={() =>
+          dispatch({ type: LoanActionTypes.SET_CALCULATION_MODAL_IS_OPEN })
+        }
+        render={() => (
+          <CalculationModalWrapper>
+            <LoanCalculation />
+          </CalculationModalWrapper>
+        )}
+      />
     </Box>
   );
 };
+
+const MainWrapper = styled.div`
+  margin-top: 1.5em;
+
+  @media (min-width: 1024px) {
+    margin-top: 2em;
+  }
+`;
+
+const FormField = styled.div`
+  display: block;
+  margin-bottom: 1em;
+
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+
+  & > div {
+    width: 100%;
+  }
+
+  & > div:nth-of-type(1) {
+    @media (min-width: 1024px) {
+      margin-right: 8px;
+    }
+  }
+
+  & > div:nth-of-type(2) {
+    margin-top: 1em;
+
+    @media (min-width: 1024px) {
+      margin-left: 8px;
+      margin-top: 0;
+    }
+  }
+`;
+
+const CalculateButtonWrapper = styled.div`
+  margin-top: 1em;
+
+  @media (min-width: 1024px) {
+    margin-top: 2em;
+  }
+`;
+
+const CalculationModalWrapper = styled.div`
+  padding: 1.5em 1em;
+  width: 80vw;
+  height: auto;
+  background: white;
+  text-align: center;
+  border-radius: 4px;
+`;
 
 export default LoanMain;

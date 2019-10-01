@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { useContext } from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { Modal, Backdrop, Fade, Box } from '@material-ui/core';
-import { LoanContext } from '../contexts/loanContextProvider';
-import { LoanActionTypes } from '../types';
+import { IModalProps } from '../types';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -15,29 +13,30 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-const ModalComponent: React.FC<{ render: () => React.ReactNode }> = ({
+const ModalComponent: React.FC<IModalProps> = ({
   render,
+  open,
+  onClose,
 }: {
   render: () => React.ReactNode;
+  open: boolean;
+  onClose: () => void;
 }) => {
   const classes = useStyles();
-  const { state, dispatch } = useContext(LoanContext);
-
-  if (!state || !dispatch) return null;
 
   return (
     <Modal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       className={classes.modal}
-      open={state.modalIsOpen}
-      onClose={() => dispatch({ type: LoanActionTypes.SET_MODAL_IS_OPEN })}
+      open={open}
+      onClose={onClose}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}>
-      <Fade in={state.modalIsOpen}>
+      <Fade in={open}>
         <Box>{render()}</Box>
       </Fade>
     </Modal>

@@ -1,3 +1,5 @@
+// tslint:disable: max-classes-per-file
+
 import { FieldProps } from 'formik';
 import { Dispatch } from 'react';
 
@@ -23,7 +25,8 @@ export interface ILoanState
     values?: IFormData;
     round: boolean;
     calculating: boolean;
-    modalIsOpen: boolean;
+    scheduleModalIsOpen: boolean;
+    calculationModalIsOpen: boolean;
   }> {}
 
 export enum LoanActionTypes {
@@ -31,7 +34,8 @@ export enum LoanActionTypes {
   SET_CALCULATION,
   SET_VALUES,
   SET_ROUND,
-  SET_MODAL_IS_OPEN,
+  SET_SCHEDULE_MODAL_IS_OPEN,
+  SET_CALCULATION_MODAL_IS_OPEN,
 }
 
 export interface ScheduleDatum {
@@ -70,8 +74,12 @@ class LoanSetRound implements IAction {
   constructor(public payload: boolean) {}
 }
 
-class LoanSetModalIsOpen implements IAction {
-  readonly type = LoanActionTypes.SET_MODAL_IS_OPEN;
+class LoanSetScheduleModalIsOpen implements IAction {
+  readonly type = LoanActionTypes.SET_SCHEDULE_MODAL_IS_OPEN;
+}
+
+class LoanSetCalculationModalIsOpen implements IAction {
+  readonly type = LoanActionTypes.SET_CALCULATION_MODAL_IS_OPEN;
 }
 
 export type LoanActions =
@@ -79,7 +87,8 @@ export type LoanActions =
   | LoanSetCalculation
   | LoanSetValues
   | LoanSetRound
-  | LoanSetModalIsOpen;
+  | LoanSetScheduleModalIsOpen
+  | LoanSetCalculationModalIsOpen;
 
 export enum LoanCurrencies {
   ROUBLE = '₽',
@@ -97,4 +106,10 @@ export interface ScheduleProps {
   round: boolean;
   currency: string;
   start: Date;
+}
+
+export interface IModalProps {
+  render: () => React.ReactNode;
+  onClose: () => void;
+  open: boolean;
 }

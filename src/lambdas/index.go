@@ -5,18 +5,16 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/gorilla/mux"
-	"github.com/prplx/calcs/lambdas/loan"
+	"github.com/go-chi/chi"
+	"github.com/prplx/finance/lambdas/loan"
 )
 
 // Handler - check routing and call correct methods
 func Handler(w http.ResponseWriter, r *http.Request) {
-	router := mux.NewRouter()
-	subrouter := router.PathPrefix("/api").
-		Subrouter()
+	router := chi.NewRouter()
 
-	subrouter.HandleFunc("/health", healthCheckHandler).Methods(http.MethodGet)
-	subrouter.HandleFunc("/loan", loanHandler).Methods(http.MethodPost, http.MethodOptions)
+	router.Get("/api/health", healthCheckHandler)
+	router.Post("/api/loan", loanHandler)
 	router.ServeHTTP(w, r)
 }
 

@@ -7,8 +7,7 @@ import { LoanContext } from '../contexts/loanContextProvider';
 import addMonths from 'date-fns/addMonths';
 import format from 'date-fns/format';
 import { useTranslation } from 'react-i18next';
-import { thousandsWithRound } from '../helpers';
-import { ILoanState } from '../types';
+import { thousandsWithRound, getMonthlyPayment } from '../helpers';
 
 const getFinalPaymentDate = (start: Date, term: number) =>
   format(addMonths(start, term), 'dd.MM.yyyy');
@@ -16,25 +15,6 @@ const getFinalPaymentDate = (start: Date, term: number) =>
 const LoanCalculation: React.FC = () => {
   const { state } = useContext(LoanContext);
   const [t] = useTranslation();
-
-  const getMonthlyPayment = (loanState: ILoanState): string | undefined => {
-    const { values, calculation, round } = loanState;
-
-    if (!values || !calculation) return;
-
-    switch (values.procedure) {
-      case 'A':
-        return thousandsWithRound(calculation.schedule[0].payment, round);
-      case 'D':
-        return `${thousandsWithRound(
-          calculation.schedule[0].payment,
-          round,
-        )}...${thousandsWithRound(
-          calculation.schedule[calculation.schedule.length - 1].payment,
-          round,
-        )}`;
-    }
-  };
 
   if (!state || !state.values || !state.calculation) return null;
 

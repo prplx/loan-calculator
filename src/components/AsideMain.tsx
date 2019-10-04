@@ -7,7 +7,7 @@ import { LoanContext } from '../contexts/loanContextProvider';
 import { useTranslation } from 'react-i18next';
 import Loader from './Loader';
 import { FaWikipediaW } from 'react-icons/fa';
-import { LoanActionTypes, ILoanState } from '../types';
+import { LoanActionTypes } from '../types';
 import LoanCalculation from './LoanCalculation';
 
 const useStyles = makeStyles(() => ({

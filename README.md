@@ -2,6 +2,6 @@ https://finance.kos.sh/en
 
 Just another loan calculator in the first iteration. In the future, it will become a set of financial instruments.
 
-![Alt text](https://monosnap.com/image/pxe8D2YHYc3M6TOMPIJHKAUFIp569j)
+![Alt text](https://miro.medium.com/max/800/1*wH34tpNJ674aPOZuic8new.gif)
 
 Inspired by [Rian Darma](https://dribbble.com/shots/6766975-Mortgage-Calculator-Dashboard-Exploration)'s design.
